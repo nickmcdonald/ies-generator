@@ -5,6 +5,11 @@ These files can be used in game engines like unreal and unity, or other real tim
 
 ![IES Comparison](https://github.com/nickmcdonald/ies-generator/blob/master/img/Compare.PNG?raw=true "Compare")
 
+
+# Interface
+![interface](https://github.com/nickmcdonald/ies-generator/blob/master/img/gui.png?raw=true "Interface")
+
+
 This program gives you several configuration options that can be changed to simulate different types and shapes of lamp shades. You can configure the angle of the top and bottom of the shade and adjust the amount of light absorbed, and add noise to the light that makes it through the shade to make it look more realistic.
 
 ![Lamp Diagram](https://github.com/nickmcdonald/ies-generator/blob/master/img/diagram.png?raw=true "Diagram")

@@ -104,7 +104,6 @@ class EasyIESApplication:
 			# horResLbl.grid(column=0, row=2)
 			# horResEnt = Entry(window, width=15)
 			# horResEnt.grid(column=1, row=2)
-			# horResEnt.insert(0, '1')
 
 			topConeAngleLbl = Label(self.window, text="Shade Top Angle ")
 			topConeAngleLbl.grid(column=0, row=3)
