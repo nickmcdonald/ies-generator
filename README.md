@@ -1,3 +1,6 @@
+
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8SFL6DVAVMJ8Q)
+
 # Easy IES
 An easy to use program that generates custom IES files
 
@@ -21,5 +24,3 @@ Currently, only cylindrical, open top and bottom style lamp shades are supported
 Contribution is welcome, feel free to make a pull request or contact me with your ideas.
 
 If you like Easy IES and would like to support its development, the best way is by a donation. I don't have a lot of time to dedicate to this project because my financial situation is less than ideal. Even a small donation would be greatly appreciated. I would like to spend more time on this project, I have a lot of good ideas for it. But rent is expensive.
-
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8SFL6DVAVMJ8Q)
