@@ -1,10 +1,8 @@
 from tkinter import *
 from tkinter import filedialog
-from iesSelectors import *
 from preview import *
-from modifiers import *
-from uiGeneric import *
-
+from modifier.modifierpanel import *
+from util.uiGeneric import *
 
 class EasyIESApplication(Tk):
 
@@ -24,9 +22,9 @@ class EasyIESApplication(Tk):
 		self.vertRes.set(50)
 		self.horRes.set(1)
 
-		self.lumens.trace_add("write", self.update)
-		self.vertRes.trace_add("write", self.update)
-		self.horRes.trace_add("write", self.update)
+		self.lumens.trace_add('write', self.update)
+		self.vertRes.trace_add('write', self.update)
+		self.horRes.trace_add('write', self.update)
 
 		self.ies = None
 

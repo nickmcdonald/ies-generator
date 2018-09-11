@@ -110,14 +110,21 @@ class NumberSlider(PanelFrame):
 		self.slider.configure(length=event.width*0.5)
 
 
-class OptionSelector(Menubutton):
+class OptionButton(Menubutton):
 	def __init__(self, parent, label, var, options):
-		Menubutton.__init__(self, parent, text=label, borderwidth=1, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR, indicatoron=False)
+		Menubutton.__init__(self, parent, text=label, borderwidth=0, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR, indicatoron=False)
 		
 		self.menu = Menu(self, tearoff=False)
 		self.configure(menu=self.menu)
 		for op in options:
-			self.menu.add_radiobutton(label=op, variable=var, value=op)
+			self.menu.add_radiobutton(label=op, variable=var, value=op, indicatoron=False)
+
+
+class OptionSelector(OptionMenu):
+	def __init__(self, parent, var, options):
+		OptionMenu.__init__(self, parent, var, *options)
+		self.configure(borderwidth=0, highlightthickness=0, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR)
+		# self.grid(sticky=NSEW)
 
 
 class SaveButton(Button):
@@ -130,7 +137,7 @@ class SaveButton(Button):
 
 class DeleteButton(Button):
 	def __init__(self, parent, command):
-		self.photo = PhotoImage(file="icons/exit_small.png")
+		self.photo = PhotoImage(file="icon/exit_small.png")
 		Button.__init__(self, parent, command=command,
 				image=self.photo,
 				width=10, height=10,
