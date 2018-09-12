@@ -122,7 +122,8 @@ class Full360Modifier(Modifier):
 		self.titleLabel["text"] = "Full 360"
 
 	def apply(self, ies):
-		for op in self.operations:
-			for angle in ies.angles:
-				for point in angle.points:
-					op.apply(point, mix=self.mix.get(), progression=point.vertAngle/180)
+		if self.visibility.get() == True:
+			for op in self.operations:
+				for angle in ies.angles:
+					for point in angle.points:
+						op.apply(point, mix=self.mix.get(), progression=point.vertAngle/180)

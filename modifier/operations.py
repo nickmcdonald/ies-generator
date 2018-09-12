@@ -43,7 +43,7 @@ class Operation(PanelFrame):
 			if value != 0:
 				point.intensity /= value
 			else:
-				point.intensity = 0
+				point.intensity = 1
 		elif mix == "Add":
 			point.intensity += value
 		elif mix == "Subtract":

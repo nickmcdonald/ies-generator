@@ -85,6 +85,24 @@ class TextInput(PanelFrame):
 		self.entry.grid(column=1, row=0, sticky=W)
 
 
+class CheckboxInput(PanelFrame):
+	def __init__(self, parent, label, var):
+		PanelFrame.__init__(self, parent)
+		self.columnconfigure(0, weight=1)
+		self.columnconfigure(1, weight=1)
+		self.label = PanelLabel(self, text=label)
+		self.label.grid(column=0, row=0, sticky=E)
+
+		self.cbox = Checkbutton(self, textvariable=var, 
+				bg=PANELCOLOR, activebackground=PANELCOLOR,
+				fg=PANELCOLOR, activeforeground=PANELCOLOR,
+				selectcolor=BUTTONCOLOR,
+				text=''
+		)
+
+		self.cbox.grid(column=1, row=0, sticky=W)
+
+
 class NumberSlider(PanelFrame):
 	def __init__(self, parent, label, low, high, var):
 		PanelFrame.__init__(self, parent)
@@ -111,7 +129,10 @@ class NumberSlider(PanelFrame):
 
 class OptionButton(Menubutton):
 	def __init__(self, parent, label, var, options):
-		Menubutton.__init__(self, parent, text=label, borderwidth=0, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR, indicatoron=False)
+		Menubutton.__init__(self, parent, text=label, borderwidth=0, relief=FLAT,
+		activebackground=BUTTONCOLOR, bg=BUTTONCOLOR,
+		activeforeground=TEXTCOLOR, fg=TEXTCOLOR,
+		indicatoron=False)
 		
 		self.menu = Menu(self, tearoff=False)
 		self.configure(menu=self.menu)
@@ -122,7 +143,10 @@ class OptionButton(Menubutton):
 class OptionSelector(OptionMenu):
 	def __init__(self, parent, var, options):
 		OptionMenu.__init__(self, parent, var, *options)
-		self.configure(borderwidth=0, highlightthickness=0, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR)
+		self.configure(borderwidth=0,
+				highlightthickness=0, relief=FLAT,
+				activebackground=BUTTONCOLOR, bg=BUTTONCOLOR,
+				activeforeground=TEXTCOLOR, fg=TEXTCOLOR)
 
 
 class BaseButton(Button):
@@ -132,7 +156,8 @@ class BaseButton(Button):
 				width=width,
 				height=height,
 				relief=FLAT,
-				bg=bg, fg=TEXTCOLOR)
+				activebackground=bg, bg=bg, 
+				activeforeground=TEXTCOLOR, fg=TEXTCOLOR)
 
 
 class ExportButton(BaseButton):

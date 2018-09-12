@@ -14,18 +14,6 @@ class EasyIESApplication(Tk):
 
 		self.configure(bg=BGCOLOR)
 
-		self.lumens = IntVar()
-		self.vertRes = IntVar()
-		self.horRes = IntVar()
-
-		self.lumens.set(850)
-		self.vertRes.set(50)
-		self.horRes.set(1)
-
-		self.lumens.trace_add('write', self.update)
-		self.vertRes.trace_add('write', self.update)
-		self.horRes.trace_add('write', self.update)
-
 		self.ies = None
 
 		self.columnconfigure(0, weight=1)
@@ -36,11 +24,26 @@ class EasyIESApplication(Tk):
 		self.uiPanel = PanelFrame(self)
 		self.uiPanel.grid(column=0, row=0)
 
-		TextInput(self.uiPanel, "Intensity (Lumens)", self.lumens).grid(column=0, row=0, pady=10)
-		TextInput(self.uiPanel, "Vertical Resolution", self.vertRes).grid(column=0, row=1)
-		TextInput(self.uiPanel, "Horizontal Resolution", self.horRes).grid(column=0, row=2, pady=10)
+		self.lumens = IntVar()
+		self.lumens.set(850)
+		self.lumens.trace_add('write', self.update)
+		TextInput(self.uiPanel, "Intensity (Lumens)", self.lumens).grid(column=0, row=0, pady=5)
+
+		self.vertRes = IntVar()
+		self.vertRes.set(50)
+		self.vertRes.trace_add('write', self.update)
+		TextInput(self.uiPanel, "Vertical Resolution", self.vertRes).grid(column=0, row=1, pady=5)
+
+		self.horRes = IntVar()
+		self.horRes.set(1)
+		self.horRes.trace_add('write', self.update)
+		# TextInput(self.uiPanel, "Horizontal Resolution", self.horRes).grid(column=0, row=2, pady=5)
+
+		self.clamp = BooleanVar()
+		self.clamp.set(True)
+		CheckboxInput(self.uiPanel, "Clamp Intensity", self.clamp).grid(column=0, row=3, pady=5)
 		
-		ExportButton(self.uiPanel, self.export).grid(column=0,row=3, pady=10)
+		ExportButton(self.uiPanel, self.export).grid(column=0,row=4, pady=5)
 
 		self.preview = PreviewRender(self)
 		self.preview.grid(column=0, row=1, rowspan=10)
@@ -68,7 +71,7 @@ class EasyIESApplication(Tk):
 				f = open(filename, 'w+')
 			else:
 				f = open(filename + ".ies", 'w+')
-			print(self.ies.getIESOutput(), file=f)
+			print(self.ies.getIESOutput(self.clamp.get()), file=f)
 
 
 app = EasyIESApplication()
