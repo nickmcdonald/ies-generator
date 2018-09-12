@@ -8,7 +8,7 @@ class iesData:
 		
 		y = 0
 		while y < 359.999:
-			self.angles.append(iesAngle(y, vertRes, lumens))
+			self.angles.append(iesAngle(y, vertRes, 1))
 			y += 360/horRes
 
 	def getIESOutput(self):
@@ -29,7 +29,7 @@ class iesData:
 		for angle in self.angles:
 			n = 0
 			for point in angle.points:
-				out += "{0:.2f} ".format(point.intensity)
+				out += "{0:.2f} ".format(self.lumens * point.intensity)
 				if n == 9:
 					out += "\n"
 					n = 0

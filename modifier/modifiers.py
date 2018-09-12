@@ -13,29 +13,38 @@ class Modifier(PanelFrame):
 
 		self.topBar = PanelFrame(self)
 		self.topBar.grid(column=0,row=0)
-		self.topBar.columnconfigure(0, weight=1)
-		self.topBar.columnconfigure(1, weight=1)
-		self.topBar.columnconfigure(2, weight=1)
-		self.topBar.columnconfigure(3, weight=1)
 		self.details = PanelFrame(self)
 		self.details.grid(column=0,row=1)
 		self.details.columnconfigure(0, weight=1)
-		self.titleLabel = PanelLabel(self.topBar, text="Modifier")
-		self.titleLabel.grid(column=0,row=0,sticky=W)
 
-		self.operations = []
+		CollapseButton(self.topBar, self.details).grid(column=0,row=0)
+		self.topBar.columnconfigure(0, weight=0)
+
+		self.titleLabel = PanelLabel(self.topBar, text="Modifier")
+		self.titleLabel.grid(column=1,row=0, sticky=W)
+		self.topBar.columnconfigure(1, weight=1)
 
 		self.selection = StringVar()
 		self.selection.set("Add Operation")
 		self.selection.trace_add('write', self.addOperation)
-		OptionButton(self.topBar, "Add Operation", self.selection, OPERATIONS).grid(column=1,row=0)
+		OptionButton(self.topBar, "Add Operation", self.selection, OPERATIONS).grid(column=2,row=0)
+		self.topBar.columnconfigure(2, weight=1)
+		self.operations = []
 
-		self.method = StringVar()
-		self.method.set(MIXMETHODS[0])
-		self.method.trace_add('write', self.update)
-		OptionSelector(self.topBar, self.method,MIXMETHODS).grid(column=2,row=0)
+		self.mix = StringVar()
+		self.mix.set(MIXMETHODS[0])
+		self.mix.trace_add('write', self.update)
+		OptionSelector(self.topBar, self.mix, MIXMETHODS).grid(column=3,row=0)
+		self.topBar.columnconfigure(3, weight=1)
 
-		DeleteButton(self.topBar, self.deleteSelf).grid(column=3,row=0,padx=20)
+		self.visibility = BooleanVar()
+		self.visibility.set(True)
+		VisibilityButton(self.topBar, self.visibility).grid(column=4,row=0)
+		self.topBar.columnconfigure(4, weight=0)
+
+		DeleteButton(self.topBar, self.deleteSelf).grid(column=5,row=0)
+		self.topBar.columnconfigure(5, weight=0)
+
 		PanelLabel(self).grid(column=0,row=100)
 
 		self.rowCounter = 1
@@ -50,13 +59,13 @@ class Modifier(PanelFrame):
 		s = self.selection.get()
 		if s != "Add Operation":
 			if s == "Adjust Intensity":
-				mod = AdjustIntensity(self)
+				mod = AdjustIntensity(self.details)
 			elif s == "Interpolate":
-				mod = Interpolate(self)
+				mod = Interpolate(self.details)
 			elif s == "Simple Curve":
-				mod = SimpleCurve(self)
+				mod = SimpleCurve(self.details)
 			elif s == "Noise":
-				mod = Noise(self)
+				mod = Noise(self.details)
 			
 			mod.grid(column=0,row=self.rowCounter)
 			self.operations.append(mod)
@@ -95,13 +104,14 @@ class AngleRangeModifier(Modifier):
 		self.rowCounter += 1
 
 	def apply(self, ies):
-		angle = self.angle.get()
-		range = self.range.get()
-		for op in self.operations:
-			for horAngle in ies.angles:
-				for idx, point in enumerate(horAngle.points):
-					if point.vertAngle >= angle and point.vertAngle <= angle + range:
-						op.apply(point, {'progression': (point.vertAngle - angle) / range})
+		if self.visibility.get() == True:
+			angle = self.angle.get()
+			range = self.range.get()
+			for op in self.operations:
+				for horAngle in ies.angles:
+					for idx, point in enumerate(horAngle.points):
+						if point.vertAngle >= angle and point.vertAngle <= angle + range:
+							op.apply(point, mix=self.mix.get(), progression=(point.vertAngle - angle)/range)
 
 
 class Full360Modifier(Modifier):
@@ -115,4 +125,4 @@ class Full360Modifier(Modifier):
 		for op in self.operations:
 			for angle in ies.angles:
 				for point in angle.points:
-					op.apply(point, {'progression': point.vertAngle / 180})
+					op.apply(point, mix=self.mix.get(), progression=point.vertAngle/180)

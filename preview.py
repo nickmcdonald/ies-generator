@@ -24,7 +24,7 @@ class PreviewRender(PanelFrame):
 		resAngle = 180 / self.ies.vertRes
 		idx = 0
 		for point in self.ies.angles[0].points:
-			color = fractionToGrey(point.intensity / self.ies.lumens)
+			color = fractionToGrey(point.intensity)
 			self.canvas.create_polygon([
 					self.width/2, self.height/2,
 					self.width/2 + self.width/2 * math.sin(math.radians(idx * resAngle)), self.height/2 + self.height/2 * math.cos(math.radians(idx * resAngle)),

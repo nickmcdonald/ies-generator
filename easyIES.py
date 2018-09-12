@@ -40,7 +40,7 @@ class EasyIESApplication(Tk):
 		TextInput(self.uiPanel, "Vertical Resolution", self.vertRes).grid(column=0, row=1)
 		TextInput(self.uiPanel, "Horizontal Resolution", self.horRes).grid(column=0, row=2, pady=10)
 		
-		SaveButton(self.uiPanel, self.save).grid(column=0,row=3, pady=10)
+		ExportButton(self.uiPanel, self.export).grid(column=0,row=3, pady=10)
 
 		self.preview = PreviewRender(self)
 		self.preview.grid(column=0, row=1, rowspan=10)
@@ -61,7 +61,7 @@ class EasyIESApplication(Tk):
 
 		self.preview.renderIESPreview(self.ies)
 
-	def save(self):
+	def export(self):
 		filename = filedialog.asksaveasfilename(title = "Select file",filetypes = (("ies files","*.ies"),("all files","*.*")))
 		if filename and len(filename) > 0:
 			if filename.endswith(".ies"):

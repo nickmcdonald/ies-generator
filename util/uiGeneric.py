@@ -3,7 +3,6 @@ from tkinter import *
 BGCOLOR = "#444444"
 PANELCOLOR = "#333333"
 BUTTONCOLOR = "#777777"
-
 TEXTCOLOR = "#ffffff"
 
 class BaseFrame(Frame):
@@ -124,28 +123,68 @@ class OptionSelector(OptionMenu):
 	def __init__(self, parent, var, options):
 		OptionMenu.__init__(self, parent, var, *options)
 		self.configure(borderwidth=0, highlightthickness=0, relief=FLAT, bg=BUTTONCOLOR, fg=TEXTCOLOR)
-		# self.grid(sticky=NSEW)
 
 
-class SaveButton(Button):
-	def __init__(self, parent, command):
-		Button.__init__(self, parent, text='Save', command=command,
-				width=15,
-				relief=FLAT,
-				bg=BUTTONCOLOR, fg=TEXTCOLOR)
-
-
-class DeleteButton(Button):
-	def __init__(self, parent, command):
-		self.photo = PhotoImage(file="icon/exit_small.png")
+class BaseButton(Button):
+	def __init__(self, parent, command, text="", image=None, width=10, height=10, bg=BUTTONCOLOR):
 		Button.__init__(self, parent, command=command,
-				image=self.photo,
-				width=10, height=10,
+				text=text, image=image,
+				width=width,
+				height=height,
 				relief=FLAT,
-				bg=BUTTONCOLOR, fg=TEXTCOLOR)
-		self.grid(sticky=E)
+				bg=bg, fg=TEXTCOLOR)
 
 
-class CollapseButton(Button):
-	def __init__(self, parent):
-		Button.__init__(self, parent, text="V", command=command, width=2, bg=BUTTONCOLOR, fg=TEXTCOLOR)
+class ExportButton(BaseButton):
+	def __init__(self, parent, command):
+		BaseButton.__init__(self, parent, text='Export', command=command, width=15, height=1)
+
+
+class DeleteButton(BaseButton):
+	def __init__(self, parent, command):
+		self.deleteImage = PhotoImage(file="icon/exit_small.png")
+		BaseButton.__init__(self, parent, command=command, image=self.deleteImage)
+
+
+class CollapseButton(BaseButton):
+	def __init__(self, parent, collapseFrame):
+		self.collapsedImage = PhotoImage(file="icon/collapsed_small.png")
+		self.expandedImage = PhotoImage(file="icon/expanded_small.png")
+		BaseButton.__init__(self, parent, command=self.toggle,
+				image=self.expandedImage, bg=PANELCOLOR)
+
+		self.collapseFrame = collapseFrame
+		self.collapseFrameRow = int(collapseFrame.grid_info()['row'])
+		self.collapseFrameColumn = int(collapseFrame.grid_info()['column'])
+		self.collapsed = False
+	
+	def toggle(self):
+		if self.collapsed:
+			self.collapseFrame.grid(column=self.collapseFrameColumn,row=self.collapseFrameRow)
+			self.configure(image=self.expandedImage)
+		else:
+			self.collapseFrame.grid_remove()
+			self.configure(image=self.collapsedImage)
+		self.collapsed = not self.collapsed
+
+class VisibilityButton(BaseButton):
+	def __init__(self, parent, var):
+		self.visibleImage = PhotoImage(file="icon/visible_small.png")
+		self.notVisibleImage = PhotoImage(file="icon/notvisible_small.png")
+		self.parent = parent
+		self.var = var
+		BaseButton.__init__(self, parent, command=self.toggle,
+				image=self.visibleImage)
+
+		self.visible = True
+	
+	def toggle(self):
+		self.visible = not self.visible
+		if self.visible:
+			self.configure(image=self.visibleImage)
+			self.var.set(True)
+		else:
+			self.configure(image=self.notVisibleImage)
+			self.var.set(False)
+		
+		self.parent.parent.update()

@@ -17,24 +17,51 @@ class Operation(PanelFrame):
 		self.topBar.columnconfigure(0, weight=1)
 		self.topBar.columnconfigure(1, weight=1)
 		self.topBar.columnconfigure(2, weight=1)
+		self.topBar.columnconfigure(3, weight=1)
+		self.topBar.columnconfigure(4, weight=1)
 		self.details = PanelFrame(self)
 		self.details.grid(column=0,row=1)
-		self.titleLabel = PanelLabel(self.topBar, text="Operation")
-		self.titleLabel.grid(column=0, row=0, sticky=E)
 
-		DeleteButton(self.topBar, command=self.deleteSelf).grid(column=2, row=0, sticky=W)
+		CollapseButton(self.topBar, self.details).grid(column=0, row=0, sticky=E)
+		self.titleLabel = PanelLabel(self.topBar, text="Operation")
+		self.titleLabel.grid(column=1, row=0, sticky=W)
+
+		self.visibility = BooleanVar()
+		self.visibility.set(True)
+		VisibilityButton(self.topBar, self.visibility).grid(column=3,row=0, sticky=E)
+
+		DeleteButton(self.topBar, command=self.deleteSelf).grid(column=4, row=0, sticky=W)
 		
 		self.update()
 
-	def apply(self, point, options={}):
-		pass
+	def mix(self, point, value, mix):
+		if mix == "Multiply":
+			point.intensity *= value
+		elif mix == "Override":
+			point.intensity = value
+		elif mix == "Divide":
+			if value != 0:
+				point.intensity /= value
+			else:
+				point.intensity = 0
+		elif mix == "Add":
+			point.intensity += value
+		elif mix == "Subtract":
+			point.intensity -= value
+		elif mix == "Min":
+			point.intensity = min(point.intensity, value)
+		elif mix == "Max":
+			point.intensity = max(point.intensity, value)
+		if point.intensity < 0:
+			point.intensity = 0
 
 	def deleteSelf(self, *args):
-		self.parent.removeOperation(self)
+		self.parent.parent.removeOperation(self)
 		self.destroy()
 
 	def update(self, *args):
-		self.parent.update(args)
+		self.parent.parent.update(args)
+
 
 class AdjustIntensity(Operation):
 
@@ -50,8 +77,9 @@ class AdjustIntensity(Operation):
 
 		self.update()
 
-	def apply(self, point, options={}):
-		point.intensity = point.intensity * (self.intensity.get()/100)
+	def apply(self, point, mix=MIXMETHODS[0], progression=0):
+		if self.visibility.get() == True:
+			self.mix(point, self.intensity.get()/100, mix)
 
 
 class Interpolate(Operation):
@@ -64,7 +92,7 @@ class Interpolate(Operation):
 		self.method = StringVar()
 		self.method.set(INTERPMETHODS[0])
 		self.method.trace_add('write', self.update)
-		OptionSelector(self.details, self.method,INTERPMETHODS).grid(column=0,row=0)
+		OptionSelector(self.topBar, self.method,INTERPMETHODS).grid(column=2,row=0)
 
 		self.startIntensity = DoubleVar()
 		self.startIntensity.set(80)
@@ -78,11 +106,12 @@ class Interpolate(Operation):
 
 		self.update()
 
-	def apply(self, point, options={}):
-		a = self.endIntensity.get() / 100
-		b = self.startIntensity.get() / 100
-		y = interpolate(a, b, options['progression'], self.method.get())
-		point.intensity = point.intensity * y
+	def apply(self, point, mix=MIXMETHODS[0], progression=0):
+		if self.visibility.get() == True:
+			a = self.endIntensity.get() / 100
+			b = self.startIntensity.get() / 100
+			y = interpolate(a, b, progression, self.method.get())
+			self.mix(point, y, mix)
 
 
 class SimpleCurve(Operation):
@@ -95,7 +124,7 @@ class SimpleCurve(Operation):
 		self.method = StringVar()
 		self.method.set(INTERPMETHODS[0])
 		self.method.trace_add('write', self.update)
-		OptionSelector(self.details, self.method, INTERPMETHODS).grid(column=0,row=0)
+		OptionSelector(self.topBar, self.method, INTERPMETHODS).grid(column=2,row=0)
 
 		self.startIntensity = DoubleVar()
 		self.startIntensity.set(100)
@@ -114,17 +143,17 @@ class SimpleCurve(Operation):
 
 		self.update()
 
-	def apply(self, point, options={}):
-		a = self.endIntensity.get() / 100
-		b = self.midIntensity.get() / 100
-		c = self.startIntensity.get() / 100
-		y = 1
-		if options['progression'] < 0.5:
-			y = interpolate(a, b, options['progression']*2, self.method.get())
-		else:
-			y = interpolate(c, b, (1-options['progression'])*2, self.method.get())
-
-		point.intensity = point.intensity * y
+	def apply(self, point, mix=MIXMETHODS[0], progression=0):
+		if self.visibility.get() == True:
+			a = self.endIntensity.get() / 100
+			b = self.midIntensity.get() / 100
+			c = self.startIntensity.get() / 100
+			y = 1
+			if progression < 0.5:
+				y = interpolate(a, b, progression*2, self.method.get())
+			else:
+				y = interpolate(c, b, (1-progression)*2, self.method.get())
+			self.mix(point, y, mix)
 
 
 class Noise(Operation):
@@ -137,7 +166,7 @@ class Noise(Operation):
 		self.method = StringVar()
 		self.method.set(INTERPMETHODS[0])
 		self.method.trace_add('write', self.update)
-		OptionSelector(self.details, self.method, INTERPMETHODS).grid(column=0,row=0)
+		OptionSelector(self.topBar, self.method, INTERPMETHODS).grid(column=2,row=0)
 
 		self.scale = DoubleVar()
 		self.scale.set(10)
@@ -151,7 +180,8 @@ class Noise(Operation):
 
 		self.update()
 
-	def apply(self, point, options={}):
-		profile = getNoiseProfile(self.scale.get(), self.intensity.get()/100, seed=self.scale.get() + self.intensity.get())
-		y = noise(profile, options['progression'], self.method.get())
-		point.intensity = point.intensity * y
+	def apply(self, point, mix=MIXMETHODS[0], progression=0):
+		if self.visibility.get() == True:
+			profile = getNoiseProfile(self.scale.get(), self.intensity.get()/100, seed=self.scale.get() + self.intensity.get())
+			y = noise(profile, progression, self.method.get())
+			self.mix(point, y, mix)
