@@ -1,6 +1,6 @@
 import math
 import random
-from data.menuitems import *
+from util import *
 
 def interpolate(a, b, x, method):
 	if method == "Linear":

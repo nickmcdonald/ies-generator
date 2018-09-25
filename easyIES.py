@@ -1,15 +1,14 @@
 from tkinter import *
 import copy
 from preview import *
-from modifier.modifierpanel import *
-from util.uiGeneric import *
-from util.fileutils import *
+from modifier import *
+from ies import *
+from util import *
 
 
 DEFAULT_LUMENS = 850
 DEFAULT_VRES = 50
 DEFAULT_HRES = 1
-
 
 
 class EasyIESApplication(Tk):
@@ -96,7 +95,7 @@ class EasyIESApplication(Tk):
 			self.hRes.set(DEFAULT_HRES)
 
 		if t == "0% Intensity":
-			self.baseIes = iesData(
+			self.baseIes = IesData(
 				self.lumens.get(),
 				self.vRes.get(),
 				self.hRes.get(),0)
@@ -104,7 +103,7 @@ class EasyIESApplication(Tk):
 			self.vResTI.setEnabled(True)
 			self.hResTI.setEnabled(True)
 		elif t == "50% Intensity":
-			self.baseIes = iesData(
+			self.baseIes = IesData(
 				self.lumens.get(),
 				self.vRes.get(),
 				self.hRes.get(),0.5)
@@ -112,7 +111,7 @@ class EasyIESApplication(Tk):
 			self.vResTI.setEnabled(True)
 			self.hResTI.setEnabled(True)
 		elif t == "100% Intensity":
-			self.baseIes = iesData(
+			self.baseIes = IesData(
 				self.lumens.get(),
 				self.vRes.get(),
 				self.hRes.get(),1)

@@ -1,6 +1,6 @@
 from tkinter import Canvas
-from data.ies import iesData
-from util.uiGeneric import *
+from ies import *
+from util import *
 import math
 
 

@@ -1,5 +1,5 @@
 from tkinter import filedialog
-from data.ies import *
+from ies import *
 import os
 import sys
 

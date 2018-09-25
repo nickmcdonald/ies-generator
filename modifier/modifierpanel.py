@@ -1,8 +1,7 @@
 from tkinter import *
-from data.ies import iesData
-from data.menuitems import *
-from modifier.modifiers import *
-from util.uiGeneric import *
+from ies import *
+from .modifiers import *
+from util import *
 import math
 
 

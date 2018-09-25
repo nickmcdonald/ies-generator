@@ -1,5 +1,5 @@
 from tkinter import *
-from util.fileutils import *
+from util import *
 
 BGCOLOR = '#444444'
 PANELCOLOR = '#333333'

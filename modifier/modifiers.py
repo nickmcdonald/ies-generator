@@ -1,6 +1,5 @@
-from data.menuitems import *
-from util.uiGeneric import *
-from modifier.operations import *
+from util import *
+from .operations import *
 
 
 class Modifier(PanelFrame):

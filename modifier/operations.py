@@ -1,9 +1,7 @@
 from tkinter import *
 import math
-from data.ies import *
-from data.menuitems import *
-from util.uiGeneric import *
-from util.mathtuils import *
+from ies import *
+from util import *
 
 
 class Operation(PanelFrame):

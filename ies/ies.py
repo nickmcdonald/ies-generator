@@ -1,4 +1,4 @@
-class iesData:
+class IesData:
 
 	def __init__(self, lumens, vRes, hRes, val):
 		self.lumens = lumens
@@ -8,7 +8,7 @@ class iesData:
 		
 		y = 0
 		while y < 360:
-			self.angles.append(iesAngle(y, vRes, val))
+			self.angles.append(IesAngle(y, vRes, val))
 			y += 360/hRes
 
 	def getIESOutput(self, clamp):
@@ -53,7 +53,7 @@ class iesData:
 		return out
 
 
-class iesAngle:
+class IesAngle:
 
 	def __init__(self, hAngle, vRes, intensity):
 		self.hAngle = hAngle
@@ -61,7 +61,7 @@ class iesAngle:
 		self.points = []
 		x = 0.00
 		while x <= 180:
-			self.points.append(iesPoint(hAngle, x, intensity))
+			self.points.append(IesPoint(hAngle, x, intensity))
 			x += 180/(vRes-1)
 		
 		self.points[len(self.points)-1].vAngle = 180
@@ -72,7 +72,7 @@ class iesAngle:
 			point.hAngle = hAngle
 
 
-class iesPoint:
+class IesPoint:
 
 	def __init__(self, hAngle, vAngle, intensity):
 		self.hAngle = hAngle
@@ -115,7 +115,7 @@ def readIESData(inp):
 	unit = settings[6]
 	# openingSize = tuple(settings[7], settings[8], settings[9])
 
-	ies = iesData(lumens, vNums, hNums, 0)
+	ies = IesData(lumens, vNums, hNums, 0)
 
 	vAnglesRead = 0
 	for idx in range(vAngleStartIdx, len(lines)):
