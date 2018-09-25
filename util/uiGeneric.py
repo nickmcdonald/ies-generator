@@ -1,9 +1,10 @@
 from tkinter import *
+from util.fileutils import *
 
-BGCOLOR = "#444444"
-PANELCOLOR = "#333333"
-BUTTONCOLOR = "#777777"
-TEXTCOLOR = "#ffffff"
+BGCOLOR = '#444444'
+PANELCOLOR = '#333333'
+BUTTONCOLOR = '#777777'
+TEXTCOLOR = '#ffffff'
 
 class BaseFrame(Frame):
 	def __init__(self, parent=None, height=0):
@@ -24,31 +25,31 @@ class ScrollFrame(PanelFrame):
 	def __init__(self, parent):
 		PanelFrame.__init__(self, parent)
 		
-		self.bind("<Configure>", self.onFrameConfigure)
+		self.bind('<Configure>', self.onFrameConfigure)
 		self.columnconfigure(0, weight=1)
 		self.columnconfigure(1, weight=0)
 		self.rowconfigure(0, weight=1)
 		self.canvas = ScrollCanvas(self)
 		self.canvas.grid(column=0, row=0, rowspan=100, sticky=NSEW)
-		self.canvas.bind("<Configure>", self.frameWidth)
+		self.canvas.bind('<Configure>', self.frameWidth)
 		self.internalPanel = PanelFrame(self.canvas)
 		self.internalPanel.grid(column=0, row=0, sticky=NSEW)
 		self.internalPanel.columnconfigure(0, weight=1)
 		self.internalPanel.rowconfigure(0, weight=1)
-		self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.yview)
+		self.vsb = Scrollbar(self, orient='vertical', command=self.canvas.yview)
 		self.vsb.grid(column=1, row=0, rowspan=10, sticky=NS)
-		self.canvas.create_window(0, 0, window=self.internalPanel, anchor=N, tags="internalPanel")
+		self.canvas.create_window(0, 0, window=self.internalPanel, anchor=N, tags='internalPanel')
 		self.canvas.configure(yscrollcommand=self.vsb.set, bg=PANELCOLOR, highlightthickness=0)
 	
 	def onFrameConfigure(self, event):
-		self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+		self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
 	def frameWidth(self, event):
-		self.canvas.itemconfig("internalPanel", width=event.width)
+		self.canvas.itemconfig('internalPanel', width=event.width)
 	
 	def update(self, *args):
-		self.canvas.event_generate("<Configure>", width=self.canvas.winfo_width())
-		self.event_generate("<Configure>")
+		self.canvas.event_generate('<Configure>', width=self.canvas.winfo_width())
+		self.event_generate('<Configure>')
 		self.parent.update(args)
 
 
@@ -59,7 +60,7 @@ class ScrollCanvas(Canvas):
 		self.grid(sticky=NSEW)
 		self.columnconfigure(0, weight=1)
 		self.rowconfigure(0, weight=1)
-		self.bind("<Configure>", self.on_resize)
+		self.bind('<Configure>', self.on_resize)
 	
 	def on_resize(self,event):
 		self.configure(width=event.width)
@@ -72,6 +73,9 @@ class PanelLabel(Label):
 	def __init__(self, parent=None, text=""):
 		Label.__init__(self, parent, text=text, bg=PANELCOLOR, fg=TEXTCOLOR)
 		self.grid(sticky=NSEW)
+	
+	def setEnabled(self, enabled):
+		pass
 
 
 class TextInput(PanelFrame):
@@ -83,6 +87,12 @@ class TextInput(PanelFrame):
 		self.label.grid(column=0, row=0, sticky=E)
 		self.entry = Entry(self, width=10, textvariable=var)
 		self.entry.grid(column=1, row=0, sticky=W)
+	
+	def setEnabled(self, enabled):
+		if enabled:
+			self.entry['state'] = NORMAL
+		else:
+			self.entry['state'] = DISABLED
 
 
 class CheckboxInput(PanelFrame):
@@ -93,7 +103,7 @@ class CheckboxInput(PanelFrame):
 		self.label = PanelLabel(self, text=label)
 		self.label.grid(column=0, row=0, sticky=E)
 
-		self.cbox = Checkbutton(self, textvariable=var, 
+		self.cbox = Checkbutton(self, variable=var, 
 				bg=PANELCOLOR, activebackground=PANELCOLOR,
 				fg=PANELCOLOR, activeforeground=PANELCOLOR,
 				selectcolor=BUTTONCOLOR,
@@ -104,17 +114,17 @@ class CheckboxInput(PanelFrame):
 
 
 class NumberSlider(PanelFrame):
-	def __init__(self, parent, label, low, high, var):
+	def __init__(self, parent, label, low, high, var, step=1):
 		PanelFrame.__init__(self, parent)
 		self.columnconfigure(0, weight=1)
 		self.columnconfigure(1, weight=3)
 		self.label = PanelLabel(self, text=label)
 		self.label.grid(column=0, row=0, sticky=E)
 
-		self.bind("<Configure>", self.on_resize)
+		self.bind('<Configure>', self.on_resize)
 
 		self.slider = Scale(self,
-				from_=low, to=high,
+				from_=low, to=high, resolution=step,
 				width=7, length=150, sliderlength=10,
 				orient=HORIZONTAL, sliderrelief=FLAT,
 				bg=PANELCOLOR, fg=TEXTCOLOR, highlightcolor=BUTTONCOLOR,
@@ -125,14 +135,17 @@ class NumberSlider(PanelFrame):
 
 	def on_resize(self,event):
 		self.slider.configure(length=event.width*0.5)
+	
+	def setSliderVals(low, high, step=1):
+		self.slider.config(from_=low, to=high, resolution=step)
 
 
 class OptionButton(Menubutton):
 	def __init__(self, parent, label, var, options):
 		Menubutton.__init__(self, parent, text=label, borderwidth=0, relief=FLAT,
-		activebackground=BUTTONCOLOR, bg=BUTTONCOLOR,
-		activeforeground=TEXTCOLOR, fg=TEXTCOLOR,
-		indicatoron=False)
+			activebackground=BUTTONCOLOR, bg=BUTTONCOLOR,
+			activeforeground=TEXTCOLOR, fg=TEXTCOLOR,
+			indicatoron=False)
 		
 		self.menu = Menu(self, tearoff=False)
 		self.configure(menu=self.menu)
@@ -165,16 +178,22 @@ class ExportButton(BaseButton):
 		BaseButton.__init__(self, parent, text='Export', command=command, width=15, height=1)
 
 
+class IesBaseButton(OptionButton):
+	def __init__(self, parent, var, options):
+		OptionButton.__init__(self, parent, 'Set IES Base', var, options)
+		self.config(width=17, height=1)
+
+
 class DeleteButton(BaseButton):
 	def __init__(self, parent, command):
-		self.deleteImage = PhotoImage(file="icon/exit_small.png")
+		self.deleteImage = PhotoImage(file=resourcePath('icon/exit_small.png'))
 		BaseButton.__init__(self, parent, command=command, image=self.deleteImage)
 
 
 class CollapseButton(BaseButton):
 	def __init__(self, parent, collapseFrame):
-		self.collapsedImage = PhotoImage(file="icon/collapsed_small.png")
-		self.expandedImage = PhotoImage(file="icon/expanded_small.png")
+		self.collapsedImage = PhotoImage(file=resourcePath('icon/collapsed_small.png'))
+		self.expandedImage = PhotoImage(file=resourcePath('icon/expanded_small.png'))
 		BaseButton.__init__(self, parent, command=self.toggle,
 				image=self.expandedImage, bg=PANELCOLOR)
 
@@ -194,8 +213,8 @@ class CollapseButton(BaseButton):
 
 class VisibilityButton(BaseButton):
 	def __init__(self, parent, var):
-		self.visibleImage = PhotoImage(file="icon/visible_small.png")
-		self.notVisibleImage = PhotoImage(file="icon/notvisible_small.png")
+		self.visibleImage = PhotoImage(file=resourcePath('icon/visible_small.png'))
+		self.notVisibleImage = PhotoImage(file=resourcePath('icon/notvisible_small.png'))
 		self.parent = parent
 		self.var = var
 		BaseButton.__init__(self, parent, command=self.toggle,

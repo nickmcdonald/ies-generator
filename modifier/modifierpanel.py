@@ -29,9 +29,13 @@ class ModifiersPanel(ScrollFrame):
 		s = self.selection.get()
 		if s != "Add Modifier":
 			if s == "Full 360":
-				mod = Full360Modifier(self.internalPanel)
-			elif s == "Angle Range":
-				mod = AngleRangeModifier(self.internalPanel)
+				mod = Full360(self.internalPanel)
+			elif s == "Vertical Range":
+				mod = VerticalRange(self.internalPanel)
+			elif s == "Horizontal Range":
+				mod = HorizontalRange(self.internalPanel)
+			elif s == "Vertical Horizontal Range":
+				mod = VHRange(self.internalPanel)
 
 			mod.grid(column=0,row=self.rowCounter, sticky=EW)
 			self.modifiers.append(mod)

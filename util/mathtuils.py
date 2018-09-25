@@ -4,17 +4,27 @@ from data.menuitems import *
 
 def interpolate(a, b, x, method):
 	if method == "Linear":
-		return linearinterpolate(a, b, x)
+		return linearInterpolate(a, b, x)
 	elif method == "Smooth":
-		return smoothinterpolate(a, b, x)
+		return smoothInterpolate(a, b, x)
+	elif method == "Sharp":
+		return sharpInterpolate(a, b, x)
+	elif method == "Root":
+		return rootInterpolate(a, b, x)
 
-def linearinterpolate(a, b, x):
+def linearInterpolate(a, b, x):
 	return a * (1 - x) + b * x
 
-def smoothinterpolate(a, b, x):
+def smoothInterpolate(a, b, x):
 	ft = x * math.pi
 	f = (1 - math.cos(ft)) / 2
 	return a * (1 - f) + b * f
+
+def sharpInterpolate(a, b, x):
+	return (b - a) * x ** 2 + a
+
+def rootInterpolate(a, b, x):
+	return (b - a) * math.sqrt(x) + a
 
 def getNoiseProfile(scale, intensity, seed=1):
 	s = seed

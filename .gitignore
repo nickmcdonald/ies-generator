@@ -49,6 +49,9 @@ coverage.xml
 
 # build
 build/
+dist/
+
+*.stackdump
 
 # Translations
 *.mo

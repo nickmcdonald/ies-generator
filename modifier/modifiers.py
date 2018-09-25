@@ -66,6 +66,8 @@ class Modifier(PanelFrame):
 				mod = SimpleCurve(self.details)
 			elif s == "Noise":
 				mod = Noise(self.details)
+			elif s == "Mask":
+				mod = Mask(self.details)
 			
 			mod.grid(column=0,row=self.rowCounter)
 			self.operations.append(mod)
@@ -84,37 +86,118 @@ class Modifier(PanelFrame):
 		self.parent.parent.update(args)
 
 
-class AngleRangeModifier(Modifier):
+class VerticalRange(Modifier):
 
 	def __init__(self, parent):
 		Modifier.__init__(self, parent)
 
-		self.titleLabel["text"] = "Angle Range"
+		self.titleLabel["text"] = "Vertical Range"
 
-		self.angle = DoubleVar()
-		self.angle.set(45)
-		self.angle.trace_add('write', self.update)
-		NumberSlider(self.details, "Angle", 0, 180, self.angle).grid(column=0,row=self.rowCounter)
+		self.vAngle = DoubleVar()
+		self.vAngle.set(45)
+		self.vAngle.trace_add('write', self.update)
+		NumberSlider(self.details, "Angle", 0, 180, self.vAngle).grid(column=0,row=self.rowCounter)
 		self.rowCounter += 1
 
-		self.range = DoubleVar()
-		self.range.set(90)
-		self.range.trace_add('write', self.update)
-		NumberSlider(self.details, "Range", 0, 180, self.range).grid(column=0,row=self.rowCounter)
+		self.vRange = DoubleVar()
+		self.vRange.set(90)
+		self.vRange.trace_add('write', self.update)
+		NumberSlider(self.details, "Range", 0, 180, self.vRange).grid(column=0,row=self.rowCounter)
 		self.rowCounter += 1
 
 	def apply(self, ies):
 		if self.visibility.get() == True:
-			angle = self.angle.get()
-			range = self.range.get()
+			vAngle = self.vAngle.get()
+			vRange = self.vRange.get()
 			for op in self.operations:
-				for horAngle in ies.angles:
-					for idx, point in enumerate(horAngle.points):
-						if point.vertAngle >= angle and point.vertAngle <= angle + range:
-							op.apply(point, mix=self.mix.get(), progression=(point.vertAngle - angle)/range)
+				for angle in ies.angles:
+					for point in angle.points:
+						if point.vAngle >= vAngle and point.vAngle <= vAngle + vRange:
+							op.apply(point, mix=self.mix.get(), progression=(point.vAngle - vAngle)/vRange)
 
 
-class Full360Modifier(Modifier):
+class HorizontalRange(Modifier):
+
+	def __init__(self, parent):
+		Modifier.__init__(self, parent)
+
+		self.titleLabel["text"] = "Horizontal Range"
+
+		self.hAngle = DoubleVar()
+		self.hAngle.set(45)
+		self.hAngle.trace_add('write', self.update)
+		NumberSlider(self.details, "Angle", 0, 360, self.hAngle).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+		self.hRange = DoubleVar()
+		self.hRange.set(90)
+		self.hRange.trace_add('write', self.update)
+		NumberSlider(self.details, "Range", 0, 360, self.hRange).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+	def apply(self, ies):
+		if self.visibility.get() == True:
+			hAngle = self.hAngle.get()
+			hRange = self.hRange.get()
+			for op in self.operations:
+				for angle in ies.angles:
+					for point in angle.points:
+						if point.hAngle >= hAngle and point.hAngle <= hAngle + hRange:
+							op.apply(point, mix=self.mix.get(), progression=(point.hAngle - hAngle)/hRange)
+
+
+class VHRange(Modifier):
+
+	def __init__(self, parent):
+		Modifier.__init__(self, parent)
+
+		self.titleLabel["text"] = "Vertical Horizontal Range"
+
+		self.vAngle = DoubleVar()
+		self.vAngle.set(45)
+		self.vAngle.trace_add('write', self.update)
+		NumberSlider(self.details, "Vertical Angle", 0, 180, self.vAngle).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+		self.vRange = DoubleVar()
+		self.vRange.set(90)
+		self.vRange.trace_add('write', self.update)
+		NumberSlider(self.details, "Vertical Range", 0, 180, self.vRange).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+		self.hAngle = DoubleVar()
+		self.hAngle.set(45)
+		self.hAngle.trace_add('write', self.update)
+		NumberSlider(self.details, "Horizontal Angle", 0, 360, self.hAngle).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+		self.hRange = DoubleVar()
+		self.hRange.set(90)
+		self.hRange.trace_add('write', self.update)
+		NumberSlider(self.details, "Horizontal Range", 0, 360, self.hRange).grid(column=0,row=self.rowCounter)
+		self.rowCounter += 1
+
+	def apply(self, ies):
+		if self.visibility.get() == True:
+			vAngle = self.vAngle.get()
+			vRange = self.vRange.get()
+			hAngle = self.hAngle.get()
+			hRange = self.hRange.get()
+			for op in self.operations:
+				for angle in ies.angles:
+					for point in angle.points:
+						if point.hAngle >= hAngle and point.hAngle <= hAngle + hRange:
+							if point.vAngle >= vAngle and point.vAngle <= vAngle + vRange:
+								hProgress = (point.hAngle - hAngle)/hRange
+								if hProgress > 0.5:
+									hProgress = 1 - hProgress
+								vProgress = (point.vAngle - vAngle)/vRange
+								if vProgress > 0.5:
+									vProgress = 1 - vProgress
+								op.apply(point, mix=self.mix.get(), progression=(hProgress + vProgress)/2)
+
+
+class Full360(Modifier):
 
 	def __init__(self, parent):
 		Modifier.__init__(self, parent)
@@ -126,4 +209,4 @@ class Full360Modifier(Modifier):
 			for op in self.operations:
 				for angle in ies.angles:
 					for point in angle.points:
-						op.apply(point, mix=self.mix.get(), progression=point.vertAngle/180)
+						op.apply(point, mix=self.mix.get(), progression=point.vAngle/180)

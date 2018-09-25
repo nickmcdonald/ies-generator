@@ -35,23 +35,24 @@ class Operation(PanelFrame):
 		self.update()
 
 	def mix(self, point, value, mix):
-		if mix == "Multiply":
-			point.intensity *= value
-		elif mix == "Override":
-			point.intensity = value
-		elif mix == "Divide":
-			if value != 0:
-				point.intensity /= value
-			else:
-				point.intensity = 1
-		elif mix == "Add":
-			point.intensity += value
-		elif mix == "Subtract":
-			point.intensity -= value
-		elif mix == "Min":
-			point.intensity = min(point.intensity, value)
-		elif mix == "Max":
-			point.intensity = max(point.intensity, value)
+		if point.mask < 0.5:
+			if mix == "Multiply":
+				point.intensity *= value
+			elif mix == "Override":
+				point.intensity = value
+			elif mix == "Divide":
+				if value != 0:
+					point.intensity /= value
+				else:
+					point.intensity = 1
+			elif mix == "Add":
+				point.intensity += value
+			elif mix == "Subtract":
+				point.intensity -= value
+			elif mix == "Min":
+				point.intensity = min(point.intensity, value)
+			elif mix == "Max":
+				point.intensity = max(point.intensity, value)
 		if point.intensity < 0:
 			point.intensity = 0
 
@@ -80,6 +81,25 @@ class AdjustIntensity(Operation):
 	def apply(self, point, mix=MIXMETHODS[0], progression=0):
 		if self.visibility.get() == True:
 			self.mix(point, self.intensity.get()/100, mix)
+
+
+class Mask(Operation):
+
+	def __init__(self, parent):
+		Operation.__init__(self, parent)
+
+		self.titleLabel['text'] = "Mask"
+
+		self.mask = DoubleVar()
+		self.mask.set(80)
+		self.mask.trace_add('write', self.update)
+		NumberSlider(self.details, "Mask", 0, 1, self.mask).grid(column=0,row=0)
+
+		self.update()
+
+	def apply(self, point, mix=MIXMETHODS[0], progression=0):
+		if self.visibility.get() == True:
+			point.mask = self.mask.get()
 
 
 class Interpolate(Operation):
