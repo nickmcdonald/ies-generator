@@ -57,7 +57,7 @@ class EasyIESApplication(Tk):
 
 		self.baseIesType = StringVar()
 		self.baseIesType.set(BASEIESTYPES[0])
-		self.baseIesType.trace_add('write', self.update)
+		self.baseIesType.trace_add('write', self.selectIesBase)
 		IesBaseButton(self.uiPanel, self.baseIesType, BASEIESTYPES).grid(column=0,row=5, pady=5)
 
 		self.preview = PreviewRender(self)
@@ -118,7 +118,7 @@ class EasyIESApplication(Tk):
 			self.lumensTI.setEnabled(True)
 			self.vResTI.setEnabled(True)
 			self.hResTI.setEnabled(True)
-		elif t == "Import" and importing:
+		elif t == "Import" and selecting:
 			self.baseIes = importIES()
 			self.lumens.set(self.baseIes.lumens)
 			self.vRes.set(self.baseIes.vRes)

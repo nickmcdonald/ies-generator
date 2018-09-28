@@ -1,3 +1,5 @@
+import re
+
 class IesData:
 
 	def __init__(self, lumens, vRes, hRes, val):
@@ -104,7 +106,7 @@ def readIESData(inp):
 			val = l.split(']')[1]
 			details[name] = val
 		elif l.startswith("TILT"):
-			settings = lines[idx+1].split(' ')
+			settings = re.sub(' +', ' ', lines[idx+1]).split(' ')
 			unknownNumbers = lines[idx+2]
 			vAngleStartIdx = idx + 3
 
@@ -137,16 +139,24 @@ def readIESData(inp):
 			valsStartIdx = idx+1
 			break
 
+	brightest = 0
 	valsIdx = 0
 	angleIdx = 0
 	for idx in range(valsStartIdx, len(lines)):
 		vals = lines[idx].split()
 		for val in vals:
+			if float(val) > brightest:
+				brightest = float(val)
 			if valsIdx >= vNums:
 				valsIdx = 0
 				angleIdx +=1
-			ies.angles[angleIdx].points[valsIdx].intensity = float(val)/lumens
+			ies.angles[angleIdx].points[valsIdx].intensity = float(val)
 			ies.angles[angleIdx].points[valsIdx].vAngle = vAngles[valsIdx]
 			valsIdx += 1
+	
+	ies.lumens = brightest
+	for angle in ies.angles:
+		for point in angle.points:
+			point.intensity /= brightest
 
 	return ies
