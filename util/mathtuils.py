@@ -82,3 +82,30 @@ def noise2D(profile, x, y, method):
 				else:
 					return 1
 	return 1
+
+
+def getNoiseProfile(scale, intensity, seed=1):
+	s = seed
+	points = []
+	for i in range(0, int(scale)):
+		random.seed(s)
+		if intensity > 0:
+			points.append(1-(random.randrange(0,int(intensity*100),1)/100))
+		else:
+			points.append(1)
+		s += 1
+
+	points[0] = 1
+	points[len(points)-1] = 1
+	return points
+
+def noise(profile, x, method):
+	for idx, point in enumerate(profile):
+		x1 = idx / len(profile)
+		x2 = (idx+1) / len(profile)
+		if x1 <= x and x <= x2:
+			if idx+1 < len(profile):
+				return interpolate(point, profile[idx+1], (x-x1)/(x2-x1), method)
+			else:
+				return interpolate(point, profile[idx], (x-x1)/(x2-x1), method)
+	return 1

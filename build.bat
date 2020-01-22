@@ -1,4 +1,4 @@
-C:\\Users\\nickm\\AppData\\Local\\Programs\\Python\\Python37\\Scripts\\pyinstaller.exe ^
+C:\\Users\\nickm\\.conda\\envs\\iesgen\\Scripts\\pyinstaller.exe ^
 	-F --windowed ^
 	--add-data="icon/collapsed_small.png;icon" ^
 	--add-data="icon/exit_small.png;icon" ^

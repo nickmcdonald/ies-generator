@@ -21,7 +21,7 @@ class PreviewRender(PanelFrame):
 		self.hAngle = IntVar()
 		self.hAngle.set(0)
 		self.hAngle.trace_add('write', self.update)
-		self.slider = NumberSlider(self, "View Angle", 0, 360, self.hAngle).grid(column=0,row=0)
+		# self.slider = NumberSlider(self, "View Angle", 0, 360, self.hAngle).grid(column=0,row=0)
 
 	def renderIESPreview(self, ies=None):
 		self.canvas.delete('all')
@@ -48,7 +48,7 @@ class PreviewRender(PanelFrame):
 					self.width/2 + self.width/2 * math.sin(math.radians(nextAngle)), self.height/2 + self.height/2 * math.cos(math.radians(nextAngle))
 			], outline=color, fill=color, width=0)
 			idx += 1
-		
+
 		for idx, point in enumerate(a2.points):
 			color = fractionToGrey(point.intensity)
 			try:
@@ -61,9 +61,9 @@ class PreviewRender(PanelFrame):
 					self.width/2 + -self.width/2 * math.sin(math.radians(nextAngle)), self.height/2 + self.height/2 * math.cos(math.radians(nextAngle))
 			], outline=color, fill=color, width=0)
 			idx += 1
-			
+
 		self.bind("<Configure>", self.on_resize)
-	
+
 	def on_resize(self,event):
 		windowx = self.parent.winfo_width() / 2
 		windowy = self.parent.winfo_height() / 2
@@ -73,7 +73,7 @@ class PreviewRender(PanelFrame):
 		else:
 			size = windowy
 			scale = float(windowy)/self.height
-		
+
 		self.width = size
 		self.height = size
 
@@ -81,13 +81,13 @@ class PreviewRender(PanelFrame):
 		self.canvas.scale("all",0,0,scale,scale)
 
 		self.renderIESPreview()
-	
+
 	def update(self, *args):
 		self.renderIESPreview()
-	
+
 	def clear(self):
 		self.canvas.delete('all')
-	
+
 
 def closest(angle, angles):
 	c = angles[0]

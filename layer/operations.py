@@ -9,7 +9,7 @@ class Operation(PanelFrame):
 	def __init__(self, parent):
 		PanelFrame.__init__(self, parent)
 		self.parent = parent
-		
+
 		self.topBar = PanelFrame(self)
 		self.topBar.grid(column=0,row=0)
 		self.topBar.columnconfigure(0, weight=1)
@@ -29,7 +29,7 @@ class Operation(PanelFrame):
 		VisibilityButton(self.topBar, self.visibility).grid(column=3,row=0, sticky=E)
 
 		DeleteButton(self.topBar, command=self.deleteSelf).grid(column=4, row=0, sticky=W)
-		
+
 		self.update()
 
 	def mix(self, point, value, mix):

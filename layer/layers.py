@@ -2,12 +2,12 @@ from util import *
 from .operations import *
 
 
-class Modifier(PanelFrame):
+class Layer(PanelFrame):
 
 	def __init__(self, parent):
 		PanelFrame.__init__(self, parent)
 		self.parent = parent
-		
+
 		self.columnconfigure(0, weight=1)
 
 		self.topBar = PanelFrame(self)
@@ -19,7 +19,7 @@ class Modifier(PanelFrame):
 		CollapseButton(self.topBar, self.details).grid(column=0,row=0)
 		self.topBar.columnconfigure(0, weight=0)
 
-		self.titleLabel = PanelLabel(self.topBar, text="Modifier")
+		self.titleLabel = PanelLabel(self.topBar, text="Layer")
 		self.titleLabel.grid(column=1,row=0, sticky=W)
 		self.topBar.columnconfigure(1, weight=1)
 
@@ -49,9 +49,9 @@ class Modifier(PanelFrame):
 		self.rowCounter = 1
 
 		self.update()
-	
+
 	def deleteSelf(self, *args):
-		self.parent.parent.parent.removeModifier(self)
+		self.parent.parent.parent.removeLayer(self)
 		self.destroy()
 
 	def addOperation(self, *args):
@@ -67,13 +67,13 @@ class Modifier(PanelFrame):
 				mod = Noise(self.details)
 			elif s == "Mask":
 				mod = Mask(self.details)
-			
+
 			mod.grid(column=0,row=self.rowCounter)
 			self.operations.append(mod)
 			self.rowCounter += 1
 
 		self.update()
-	
+
 	def removeOperation(self, op):
 		self.operations.remove(op)
 		self.update()
@@ -85,12 +85,12 @@ class Modifier(PanelFrame):
 		self.parent.parent.update(args)
 
 
-class VerticalRange(Modifier):
+class VerticalRange(Layer):
 
 	def __init__(self, parent):
-		Modifier.__init__(self, parent)
+		Layer.__init__(self, parent)
 
-		self.titleLabel["text"] = "Vertical Range"
+		self.titleLabel["text"] = "Angle Range"
 
 		self.vAngle = DoubleVar()
 		self.vAngle.set(45)
@@ -115,10 +115,10 @@ class VerticalRange(Modifier):
 							op.apply(point, mix=self.mix.get(), progression=(point.vAngle - vAngle)/vRange)
 
 
-class HorizontalRange(Modifier):
+class HorizontalRange(Layer):
 
 	def __init__(self, parent):
-		Modifier.__init__(self, parent)
+		Layer.__init__(self, parent)
 
 		self.titleLabel["text"] = "Horizontal Range"
 
@@ -145,10 +145,10 @@ class HorizontalRange(Modifier):
 							op.apply(point, mix=self.mix.get(), progression=(point.hAngle - hAngle)/hRange)
 
 
-class VHRange(Modifier):
+class VHRange(Layer):
 
 	def __init__(self, parent):
-		Modifier.__init__(self, parent)
+		Layer.__init__(self, parent)
 
 		self.titleLabel["text"] = "Vertical Horizontal Range"
 
@@ -196,10 +196,10 @@ class VHRange(Modifier):
 								op.apply(point, mix=self.mix.get(), progression=(hProgress + vProgress)/2)
 
 
-class Full360(Modifier):
+class Full360(Layer):
 
 	def __init__(self, parent):
-		Modifier.__init__(self, parent)
+		Layer.__init__(self, parent)
 
 		self.titleLabel["text"] = "Full 360"
 

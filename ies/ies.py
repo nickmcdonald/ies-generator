@@ -7,7 +7,7 @@ class IesData:
 		self.vRes = vRes
 		self.hRes = hRes
 		self.angles = []
-		
+
 		y = 0
 		while y < 360:
 			self.angles.append(IesAngle(y, vRes, val))
@@ -36,7 +36,7 @@ class IesData:
 				n = 0
 			else:
 				n = n + 1
-		out += "\n\n"
+		out += "\n0 \n"
 
 		for angle in self.angles:
 			n = 0
@@ -65,9 +65,9 @@ class IesAngle:
 		while x <= 180:
 			self.points.append(IesPoint(hAngle, x, intensity))
 			x += 180/(vRes-1)
-		
+
 		self.points[len(self.points)-1].vAngle = 180
-	
+
 	def updateAngle(self, hAngle):
 		self.hAngle = hAngle
 		for point in self.points:
@@ -84,7 +84,7 @@ class IesPoint:
 
 
 def readIESData(inp):
-	
+
 	lines = [line.rstrip('\n') for line in inp]
 
 	version = ""
@@ -128,7 +128,7 @@ def readIESData(inp):
 		if vAnglesRead >= vNums:
 			hAngleStartIdx = idx+1
 			break
-	
+
 	hAnglesRead = 0
 	for idx in range(hAngleStartIdx, len(lines)):
 		vals = lines[idx].split()
@@ -153,7 +153,7 @@ def readIESData(inp):
 			ies.angles[angleIdx].points[valsIdx].intensity = float(val)
 			ies.angles[angleIdx].points[valsIdx].vAngle = vAngles[valsIdx]
 			valsIdx += 1
-	
+
 	ies.lumens = brightest
 	for angle in ies.angles:
 		for point in angle.points:
