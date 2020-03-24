@@ -1,7 +1,7 @@
+# This Project has been depreciated! Please check out its successor [CNDL](https://cndl.io) it is better in every way!
+
 
 # Easy IES
-
-[![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8SFL6DVAVMJ8Q)
 
 A free and open source program that you can use to create custom IES files
 
